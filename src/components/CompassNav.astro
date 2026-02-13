@@ -1,0 +1,131 @@
+---
+/* src/components/CompassNav.astro */
+/* The Archive Controller */
+---
+<nav class="compass-hub">
+    
+    <button class="compass-point north" id="btn-north" aria-label="Filter Status">
+        <span class="arrow">↑</span>
+        <span class="label">STATUS</span>
+    </button>
+
+    <button class="compass-point west" id="btn-west" aria-label="Show Projects">
+        <span class="label">PROJECTS</span>
+        <span class="arrow">←</span>
+    </button>
+
+    <button class="compass-core" id="btn-center" aria-label="Reset All">
+        <div class="crosshair"></div>
+    </button>
+
+    <button class="compass-point east" id="btn-east" aria-label="Show Fragments">
+        <span class="label">FRAGMENTS</span>
+        <span class="arrow">→</span>
+    </button>
+
+    <button class="compass-point south" id="btn-south" aria-label="Filter Tags">
+        <span class="label">TAGS</span>
+        <span class="arrow">↓</span>
+    </button>
+
+</nav>
+
+<script>
+    // DISPATCHER LOGIC
+    function dispatchFilter(type, value) {
+        window.dispatchEvent(new CustomEvent('compass-filter', { 
+            detail: { filterType: type, value: value } 
+        }));
+    }
+
+    // 1. CENTER (RESET)
+    document.getElementById('btn-center').onclick = () => dispatchFilter('all', 'all');
+
+    // 2. WEST (PROJECTS)
+    document.getElementById('btn-west').onclick = () => dispatchFilter('type', 'project');
+
+    // 3. EAST (FRAGMENTS)
+    document.getElementById('btn-east').onclick = () => dispatchFilter('type', 'fragment');
+
+    // 4. NORTH (CYCLE STATUS)
+    const statuses = ['seedling', 'sapling', 'evergreen'];
+    let sIndex = 0;
+    document.getElementById('btn-north').onclick = () => {
+        const val = statuses[sIndex];
+        dispatchFilter('status', val);
+        sIndex = (sIndex + 1) % statuses.length; // Cycle next
+    };
+
+    // 5. SOUTH (CYCLE TAGS - Simplified for now)
+    // Ideally this opens a menu, but for V1 let's cycle common themes
+    const tags = ['philosophy', 'art', 'psychology', 'architecture'];
+    let tIndex = 0;
+    document.getElementById('btn-south').onclick = () => {
+        const val = tags[tIndex];
+        dispatchFilter('tag', val);
+        tIndex = (tIndex + 1) % tags.length;
+    };
+</script>
+
+<style>
+    .compass-hub {
+        display: grid;
+        grid-template-areas:
+            ". n ."
+            "w c e"
+            ". s .";
+        gap: 1.4rem;
+        justify-content: center;
+        align-items: center;
+        margin: 4rem auto;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        letter-spacing: 1.5px;
+        position: relative; z-index: 100;
+    }
+
+    /* Reset Button Styles */
+    button { background: none; border: none; cursor: pointer; padding: 0; font-family: inherit; font-size: inherit; }
+
+    .compass-point {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: var(--ink);
+        opacity: 0.6;
+        transition: all 0.3s ease;
+    }
+
+    .compass-point:hover {
+        opacity: 1;
+        color: var(--moss);
+        text-shadow: 0 0 10px rgba(180, 248, 200, 0.5);
+    }
+
+    .arrow { font-size: 20px; margin-bottom: 6px; }
+
+    .north { grid-area: n; }
+    .south { grid-area: s; }
+    .east { grid-area: e; flex-direction: row; gap: 14px; }
+    .west { grid-area: w; flex-direction: row-reverse; gap: 14px; }
+
+    /* Center Core */
+    .compass-core {
+        grid-area: c;
+        width: 56px; height: 56px;
+        border: 1px solid var(--border);
+        border-radius: 50%;
+        display: flex; justify-content: center; align-items: center;
+        transition: transform 0.2s;
+    }
+    .compass-core:active { transform: scale(0.9); }
+
+    .crosshair {
+        width: 16px; height: 16px;
+        background: var(--moss);
+        border-radius: 50%;
+        opacity: 0.4;
+        transition: opacity 0.3s ease;
+    }
+    .compass-core:hover .crosshair { opacity: 1; }
+</style>

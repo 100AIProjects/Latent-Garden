@@ -1,0 +1,78 @@
+---
+/* src/pages/tc.astro */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Wayfinder from '../components/Wayfinder.astro';
+---
+
+<BaseLayout>
+    <main class="container legal-page">
+        <Wayfinder title="TERMS_OF_USE" parent="LEGAL" />
+
+        <article class="legal-doc">
+            <h1>Terms & Conditions</h1>
+            <p class="last-updated">LAST_UPDATE: 2026-02-03</p>
+
+            <section>
+                <h2>1. Access to the Garden</h2>
+                <p>The Latent Garden is an open archive. You are free to wander, read, and learn from the reasoning and methodology shared herein. The ideas, processes, and thinking behind each project are published openly under the principle of intellectual curiosity.</p>
+            </section>
+
+            <section>
+                <h2>2. The "Seeds" (Intellectual Property)</h2>
+                <p>Content marked as <strong>EVERGREEN</strong> is released under a Creative Commons Attribution (CC-BY) license. You may replant it, provided you credit the source.</p>
+                <p>Content marked as <strong>SEEDLING</strong> is experimental. Use at your own risk. It may wither or evolve without notice.</p>
+            </section>
+
+            <section>
+                <h2>3. No Warranty</h2>
+                <p>The machine reasoning provided here is "as is." We are not responsible if the logic fails, loops, or accidentally becomes sentient.</p>
+            </section>
+
+            <section>
+                <h2>4. Limitation of Liability</h2>
+                <p>To the maximum extent permitted by law, 100 AI PROJECTS shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses resulting from your access to or use of this site.</p>
+            </section>
+
+            <section>
+                <h2>5. External Links</h2>
+                <p>The Garden may contain links to external sites. We are not responsible for the content, accuracy, or practices of these third-party sites. Your use of external links is at your own risk.</p>
+            </section>
+
+            <section>
+                <h2>6. Acceptable Use</h2>
+                <p>You may not attempt to reverse-engineer, scrape, or automatically harvest content from this site without permission. You may not use this site to distribute malware or engage in unlawful activity.</p>
+            </section>
+
+            <section>
+                <h2>7. Service Availability</h2>
+                <p>We reserve the right to modify, suspend, or discontinue any part of this site at any time without notice. We are not liable for any modification, suspension, or discontinuance of the service.</p>
+            </section>
+
+            <section>
+                <h2>8. Governing Law</h2>
+                <p>These terms are governed by and construed in accordance with applicable law. Any disputes arising from these terms or your use of this site shall be resolved through good faith negotiation.</p>
+            </section>
+
+            <section>
+                <h2>9. Contact</h2>
+                <p>Questions about these terms? Reach us at mike@100aiprojects.com</p>
+            </section>
+        </article>
+
+        <footer class="footer-soil">
+            <div class="soil-divider"></div>
+            <a href="/support" class="water-cta">
+                Would you like to water the garden? 🪴
+            </a>
+            <div class="legals">
+                <span>© 2026 100 AI PROJECTS</span>
+                <a href="/tc">T&C</a>
+                <a href="/privacy">Privacy</a>
+            </div>
+        </footer>
+    </main>
+</BaseLayout>
+
+<style>
+    .legal-page { margin: 150px auto; padding: 0 20px; }
+</style>

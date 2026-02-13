@@ -1,0 +1,38 @@
+---
+/* src/components/SystemNav.astro */
+---
+<nav class="nav">
+    <a href="/" class="nav-item">INDEX_VIEW</a>
+    
+    <button id="nav-wander" class="nav-item">WANDER</button>
+    
+    <button id="theme-toggle" class="nav-item">SYSTEM_SHIFT</button>
+</nav>
+
+<style>
+    .nav {
+        position: fixed;
+        top: 40px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        z-index: 100;
+        pointer-events: none;
+    }
+    .nav-item {
+        pointer-events: all;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 8px 16px;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--ink);
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .nav-item:hover { background: var(--ink); color: var(--bg); }
+</style>

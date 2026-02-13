@@ -1,0 +1,46 @@
+---
+/* src/components/Wayfinder.astro */
+const { parent, title } = Astro.props;
+
+// Logic to handle special parent names
+const getParentLink = (p) => {
+    if (p === 'ROOT') return '/';
+    if (p === 'ARCHIVE') return '/archive';
+    return `/${p.toLowerCase()}`;
+};
+---
+
+<nav class="wayfinder">
+    <a href="/" class="root-link">001_ROOT</a>
+    
+    <span class="separator">/</span>
+    
+    {parent && (
+        <>
+            <a href={getParentLink(parent)} class="parent-link">{parent}</a>
+            <span class="separator">/</span>
+        </>
+    )}
+    
+    <span class="current">{title}</span>
+</nav>
+
+<style>
+    .wayfinder {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        opacity: 0.5;
+        transition: opacity 0.7s ease;
+        margin-bottom: 4rem; 
+    }
+    .wayfinder:hover { opacity: 1; }
+    .separator { color: var(--ink-dim); }
+    .root-link, .parent-link { color: var(--ink); text-decoration: none; transition: color 0.3s; }
+    .root-link:hover, .parent-link:hover { color: var(--moss); }
+    .current { color: var(--moss); }
+</style>

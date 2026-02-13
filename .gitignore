@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+.npm/
+.yarn/
+
+# Environment variables (ALL variations)
+.env*
+*.env
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+.env.*.local
+
+# Build outputs
+dist/
+.astro/
+.output/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Cloudflare
+.wrangler/
+wrangler.toml
+
+# Local data (if you want to keep cache private)
+data/telemetry-cache.json
+
+# Secrets (paranoid mode)
+*.pem
+*.key
+*.cert
+
+# Internal documentation (not for public repo)
+CLAUDE.md
+ARCHITECTURE.md
+DEPLOYMENT_GUIDE.md
+SECURITY.md
+SECURITY_SUMMARY.md
+IMPLEMENTATION_SUMMARY.md
+build-telemetry.js
+scripts/d1_sync.py

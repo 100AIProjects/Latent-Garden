@@ -1,0 +1,54 @@
+---
+/* src/components/ThemeToggle.astro */
+---
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle Day/Night Mode">
+    Day / Night
+</button>
+
+<script>
+    function initTheme() {
+        const btn = document.getElementById('theme-toggle');
+        if (!btn) return;
+        
+        // 1. Get State
+        const current = localStorage.getItem('theme') || 'dark'; // Default to Dark
+        document.documentElement.setAttribute('data-theme', current);
+
+        // 2. Toggle Logic
+        btn.onclick = () => {
+            const doc = document.documentElement;
+            const next = doc.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            
+            // Apply to HTML tag (Global Scope)
+            doc.setAttribute('data-theme', next);
+            localStorage.setItem('theme', next);
+            
+            // Dispatch Event (Notify the Physics Engine)
+            window.dispatchEvent(new Event('theme-change'));
+        };
+    }
+
+    // Run on every page navigation
+    document.addEventListener('astro:page-load', initTheme);
+    // Run immediately on initial load
+    initTheme(); 
+</script>
+
+<style>
+    .theme-toggle {
+        background: transparent; 
+        border: none; 
+        color: inherit;
+        padding: 0; 
+        cursor: pointer; 
+        text-transform: uppercase;
+        font-family: inherit; 
+        font-size: inherit; 
+        letter-spacing: inherit;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+    }
+    .theme-toggle:hover {
+        opacity: 1;
+    }
+</style>

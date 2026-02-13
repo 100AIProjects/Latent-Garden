@@ -1,0 +1,147 @@
+---
+/* src/pages/archive.astro */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CompassNav from '../components/CompassNav.astro';
+import Wayfinder from '../components/Wayfinder.astro'; 
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('garden');
+const sortedPosts = allPosts.sort((a, b) => b.slug.localeCompare(a.slug));
+
+const EMOJI_MAP = { 'seedling': '🌱', 'sapling': '🌿', 'evergreen': '🌲' };
+---
+
+<BaseLayout>
+    
+    <main class="container">
+        
+        <div style="display: flex; justify-content: center;">
+            <Wayfinder title="ARCHIVE_INDEX" parent="ROOT" />
+        </div>
+        
+        <header class="archive-header">
+            <h1 class="glitch-text">The Map Room</h1>
+            <p class="subtitle" id="filter-readout">FILTER: ALL</p>
+        </header>
+
+        <CompassNav />
+
+        <div class="archive-list" id="archive-grid">
+            <div class="list-head">
+                <span>ID</span>
+                <span>TITLE</span>
+                <span style="text-align: right;">STATUS</span>
+            </div>
+            
+            {sortedPosts.map((post, i) => {
+                // Calculate Emoji
+                const statusKey = post.data.status?.toLowerCase() || 'seedling';
+                const emoji = EMOJI_MAP[statusKey] || '🌱';
+
+                // Extract ID from post.data.id (e.g., "001_GENESIS" → "001")
+                // or from title (e.g., "001: About The Garden" → "001")
+                let displayId = String(i + 1).padStart(3, '0');
+                if (post.data.id) {
+                    const match = post.data.id.match(/^(\d+)/);
+                    if (match) displayId = match[1].padStart(3, '0');
+                } else if (post.data.title) {
+                    const match = post.data.title.match(/^(\d+):/);
+                    if (match) displayId = match[1].padStart(3, '0');
+                }
+
+                return (
+                <a href={`/${post.slug}`}
+                   class="archive-row"
+                   data-type={post.data.type || 'project'}
+                   data-status={statusKey}
+                   data-tags={post.data.tags?.join(',').toLowerCase()}>
+
+                    <span class="id">{displayId}</span>
+                    <span class="title">{post.data.title}</span>
+                    <span class="type-tag">{emoji} {post.data.status}</span>
+                </a>
+                )
+            })}
+        </div>
+
+        <footer class="footer-soil">
+            <div class="soil-divider"></div>
+            <a href="/support" class="water-cta">
+                Would you like to water the garden? 🪴
+            </a>
+            <div class="legals">
+                <span>© 2026 100 AI PROJECTS</span>
+                <a href="/tc">T&C</a>
+                <a href="/privacy">Privacy</a>
+            </div>
+        </footer>
+        
+    </main>
+</BaseLayout>
+
+<script>
+    /* ... Client Side Logic Remains the Same ... */
+    const grid = document.getElementById('archive-grid');
+    const readout = document.getElementById('filter-readout');
+    const rows = document.querySelectorAll('.archive-row');
+
+    window.addEventListener('compass-filter', (e) => {
+        // @ts-ignore
+        const { filterType, value } = e.detail;
+        
+        readout.innerText = `FILTER: ${value.toUpperCase()}`;
+        readout.style.opacity = '1';
+
+        rows.forEach(row => {
+            const el = row as HTMLElement;
+            const status = el.getAttribute('data-status');
+            const tags = el.getAttribute('data-tags') || '';
+            const type = el.getAttribute('data-type'); 
+
+            let isVisible = false;
+
+            if (filterType === 'all') isVisible = true;
+            if (filterType === 'status') isVisible = (status === value);
+            if (filterType === 'type') isVisible = (type === value);
+            if (filterType === 'tag') isVisible = tags.includes(value);
+
+            el.style.display = isVisible ? 'grid' : 'none';
+        });
+    });
+</script>
+
+<style>
+    .container { max-width: 800px; margin: 150px auto 0; padding: 0 20px; min-height: 80vh; }
+
+    .archive-header { margin-bottom: 4rem; text-align: center; }
+    h1 { font-family: var(--font-head); font-weight: 700; font-size: 3rem; margin-bottom: 1rem; }
+    .subtitle { font-family: var(--font-mono); font-size: 11px; color: var(--ink-dim); text-transform: uppercase; letter-spacing: 2px; transition: opacity 0.3s; }
+
+    .archive-list { border-top: 1px solid var(--border); margin-bottom: 100px; }
+
+    .list-head, .archive-row {
+        display: grid;
+        grid-template-columns: 50px 1fr 120px;
+        padding: 15px 0;
+        border-bottom: 1px solid var(--border);
+        text-decoration: none;
+        color: var(--ink);
+        align-items: center;
+        transition: background 0.2s;
+    }
+
+    .list-head { font-family: var(--font-mono); font-size: 10px; color: var(--ink-dim); letter-spacing: 1px; }
+    .archive-row:hover { background: rgba(180, 248, 200, 0.05); padding-left: 10px; }
+
+    .id { font-family: var(--font-mono); font-size: 10px; color: var(--moss); }
+    .title { font-family: var(--font-head); font-weight: 700; font-size: 1.1rem; }
+
+    .type-tag {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        text-transform: uppercase;
+        opacity: 0.8;
+        text-align: right;
+        color: var(--moss);
+    }
+</style>

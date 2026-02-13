@@ -1,0 +1,801 @@
+/* src/styles/global.css - STABILIZED */
+
+/* --- 1. VARIABLES --- */
+:root {
+    --bg: #050505;
+    --bg-mist: #050505;
+    --ink: #f9f7f1;
+    --ink-dim: rgba(249, 247, 241, 0.7);
+    /* 0.7 → ~6.2:1 on #050505. Floor for WCAG AA at 9px. */
+    --border: #333;
+    --moss: #b4f8c8;
+    --amber: #ffb347;
+    --amber-bg: rgba(255, 179, 71, 0.1);
+    --bg-surface: #111;
+    --font-head: 'Playfair Display', serif;
+    --font-mono: 'Space Mono', monospace;
+    --font-body: 'Inter', sans-serif;
+    --width: 720px;
+}
+
+[data-theme="light"] {
+    --bg: #f9f7f1;
+    --bg-mist: #f9f7f1;
+    --ink: #050505;
+    --ink-dim: rgba(5, 5, 5, 0.5);
+    --border: #e6e1d6;
+    --moss: #2d5a27;
+    --amber: #b45309;
+    --amber-bg: rgba(180, 83, 9, 0.05);
+    --bg-surface: #ece6db;
+}
+
+/* GLOBAL RESET */
+html {
+    background-color: var(--bg);
+    transition: background-color 0.5s ease;
+    min-height: 100vh;
+}
+
+body {
+    background: transparent;
+    color: var(--ink);
+    margin: 0;
+    padding: 0;
+    /* NEW DEFAULT: Clean Sans-Serif */
+    font-family: var(--font-body);
+    font-weight: 300;
+    /* Inter looks best slightly light in this aesthetic */
+    line-height: 1.6;
+}
+
+/* TYPOGRAPHY HIERARCHY */
+
+/* 1. HEADINGS (Playfair) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.hero-title,
+.node-title,
+.water-cta,
+.intro {
+    font-family: var(--font-head);
+    font-weight: 700 !important;
+    font-style: normal !important;
+}
+
+/* 2. DATA / UI (Space Mono) */
+.nav,
+.wayfinder,
+.meta,
+.status-tag,
+.node-status,
+.subtitle,
+.list-head,
+.id,
+.type-tag,
+.crypto-note,
+.cta-button {
+    font-family: var(--font-mono);
+}
+
+/* 3. BODY COPY (Inter - Inherited from body, but refined here) */
+p,
+li,
+.desc,
+.node-desc,
+.latent-desc {
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--ink-dim);
+}
+
+/* SPECIFIC COMPONENT TWEAKS */
+
+/* Ensure the big "Intro" text on Support page stays Playfair for impact */
+.intro {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+/* Ensure the node description in the list feels technical but readable */
+.node-desc {
+    font-size: 1rem;
+    opacity: 0.7;
+    max-width: 500px;
+}
+
+/* --- 2. NAV --- */
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 30px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    z-index: 100;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-dim);
+    /* Stabilise against the graph without becoming a visible bar */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: linear-gradient(to bottom,
+            rgba(5, 5, 5, 0.45) 0%,
+            rgba(5, 5, 5, 0) 100%);
+    padding-bottom: 40px;
+    /* extend the gradient fade below the links */
+}
+
+[data-theme="light"] .nav {
+    background: linear-gradient(to bottom,
+            rgba(249, 247, 241, 0.45) 0%,
+            rgba(249, 247, 241, 0) 100%);
+}
+
+.nav-left,
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.8rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.logo-full {
+    height: 20px;
+    width: auto;
+    opacity: 0.9;
+    transition: opacity 0.3s;
+}
+
+.logo:hover .logo-full {
+    opacity: 1;
+}
+
+/* Theme-specific logo visibility */
+.logo-dark {
+    display: block;
+}
+
+.logo-light {
+    display: none;
+}
+
+[data-theme="light"] .logo-dark {
+    display: none;
+}
+
+[data-theme="light"] .logo-light {
+    display: block;
+}
+
+.start-link {
+    color: var(--moss);
+    text-decoration: none;
+}
+
+.nav-item {
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.7;
+    cursor: pointer;
+    z-index: 101;
+}
+
+/* --- 3. HERO --- */
+.hero-section {
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 20vh;
+}
+
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 1000;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin: 0;
+    color: var(--ink);
+}
+
+.hero-overlay {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* Centre-weighted vignette: darkens behind the title without boxing it */
+    background: radial-gradient(ellipse 70% 55% at center,
+            rgba(5, 5, 5, 0.55) 0%,
+            rgba(5, 5, 5, 0.2) 50%,
+            transparent 100%);
+    padding: 4rem 3rem;
+    /* Allow clicks to pass through to graph canvas below */
+    pointer-events: none;
+}
+
+[data-theme="light"] .hero-overlay {
+    background: radial-gradient(ellipse 70% 55% at center,
+            rgba(249, 247, 241, 0.55) 0%,
+            rgba(249, 247, 241, 0.2) 50%,
+            transparent 100%);
+}
+
+.hero-subtitle {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+    opacity: 0.7;
+    margin-top: 2rem;
+    margin-bottom: 0;
+    max-width: 480px;
+    color: var(--ink);
+}
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.25em;
+    animation: bounce 2s infinite;
+    opacity: 0.5;
+    color: var(--ink);
+    text-decoration: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    z-index: 10;
+    pointer-events: auto;
+}
+
+.scroll-indicator:hover {
+    opacity: 0.85;
+}
+
+/* --- 4. MIST ENGINE (Optimized) --- */
+.container {
+    max-width: var(--width);
+    margin: 0 auto;
+    padding: 0 40px 20vh;
+    position: relative;
+    z-index: 10;
+}
+
+.emerge-node {
+    margin-bottom: 20vh;
+    opacity: 0;
+    transform: translateY(30px);
+    /* Reduced movement for stability */
+    /* Removed filter:blur for performance (blur is expensive) */
+    transition: opacity 1s ease-out, transform 1s ease-out;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    text-align: center;
+}
+
+.emerge-node.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.node-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.node-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--moss);
+    transition: transform 0.5s ease;
+}
+
+/* Interaction */
+.emerge-node:hover .node-dot {
+    transform: scale(3);
+    opacity: 0.5;
+}
+
+.emerge-node:hover .node-title {
+    transform: translateY(-3px);
+}
+
+.emerge-node:hover .node-desc {
+    opacity: 0.8;
+}
+
+.node-status {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+    /* INCREASED OPACITY from 0.5 to 0.8 */
+    opacity: 0.8;
+    color: var(--moss);
+    /* Force Green for visibility */
+}
+
+/* TYPOGRAPHY OVERRIDE */
+/* Force Bold, Remove Italic */
+h1,
+h2,
+h3,
+.hero-title,
+.node-title {
+    font-weight: 700 !important;
+    font-style: normal !important;
+}
+
+/* Bold text consistency - always use --ink for scanning */
+strong,
+b {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.node-title {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.1;
+    color: var(--ink);
+    transition: transform 0.5s ease;
+}
+
+.node-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 0.4;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--ink);
+    transition: opacity 0.5s ease;
+}
+
+/* Mist Overlay */
+.mist-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 15vh;
+    background: linear-gradient(to top, var(--bg-mist) 10%, transparent 100%);
+    pointer-events: none;
+    z-index: 50;
+}
+
+/* --- 5. FOOTER (single source of truth) --- */
+.footer-soil {
+    text-align: center;
+    padding-bottom: 6rem;
+    position: relative;
+    z-index: 10;
+}
+
+.soil-divider {
+    width: 100px;
+    height: 1px;
+    background: var(--moss);
+    margin: 0 auto 3rem auto;
+    opacity: 0.3;
+}
+
+.water-cta {
+    font-family: var(--font-head);
+    font-weight: 700;
+    font-style: normal;
+    font-size: 1.5rem;
+    color: var(--ink);
+    text-decoration: none;
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.water-cta:hover {
+    opacity: 1;
+}
+
+.legals {
+    margin-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    opacity: 0.5;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.legals span,
+.legals a {
+    color: var(--ink);
+    text-decoration: none;
+}
+
+/* --- 7. ARTICLE PAGES (opaque layer over the garden) --- */
+.project-article {
+    max-width: var(--width);
+    margin: 150px auto 100px;
+    padding: 40px;
+    background: var(--bg);
+    position: relative;
+    z-index: 10;
+}
+
+.project-article .title {
+    font-size: 3rem;
+    font-style: italic;
+    margin-bottom: 1rem;
+    color: var(--ink);
+}
+
+.project-article .meta {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.project-article .content-body {
+    margin-top: 4rem;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--ink);
+}
+
+.project-article .content-body p {
+    margin-bottom: 1.2rem;
+}
+
+.project-article .content-body h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.project-article .content-body a {
+    color: var(--moss);
+}
+
+/* --- 7b. DATA SURFACES (code, pre, tables) --- */
+
+/* INLINE CODE */
+code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--amber-bg);
+    color: var(--amber);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    border: 1px solid var(--amber-bg);
+    transition: color 0.3s, background 0.3s;
+}
+
+/* CODE BLOCK */
+pre {
+    background: var(--bg-surface);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    overflow-x: auto;
+    margin: 2rem 0;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+/* Reset code inside pre — inherits block colour, not inline amber */
+/* !important overrides Shiki's inline styles so code blocks respect the theme */
+pre code {
+    background: none !important;
+    border: none;
+    padding: 0;
+    color: var(--ink) !important;
+    font-size: 0.9rem;
+}
+
+pre code span {
+    color: var(--ink) !important;
+}
+
+/* Light mode: force Shiki inline styles to respect theme */
+[data-theme="light"] pre {
+    background: var(--bg-surface) !important;
+    color: var(--ink) !important;
+}
+
+[data-theme="light"] pre code,
+[data-theme="light"] pre code span {
+    color: var(--ink) !important;
+}
+
+/* MERMAID DIAGRAMS */
+.mermaid {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--moss);
+    border-radius: 8px;
+    overflow-x: auto;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.mermaid svg {
+    max-width: 100%;
+    height: auto;
+}
+
+[data-theme="light"] .mermaid {
+    background: var(--bg-surface) !important;
+}
+
+/* MATH BLOCKS (KaTeX) */
+.math-block {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--moss);
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 1.1rem;
+}
+
+.math-block .katex {
+    color: var(--ink);
+}
+
+[data-theme="light"] .math-block {
+    background: var(--bg-surface) !important;
+}
+
+/* TABLES */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 2px solid var(--amber);
+    color: var(--amber);
+    font-weight: 600;
+    opacity: 0.9;
+    white-space: nowrap;
+    transition: color 0.3s;
+}
+
+td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    color: var(--ink-dim);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* CURRENCY / METRIC HIGHLIGHT */
+.currency {
+    color: var(--amber);
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+/* --- 8. LEGAL PAGES (shared: privacy, tc) --- */
+.legal-doc {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.legal-doc h1 {
+    font-family: var(--font-head);
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.legal-doc .last-updated {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--moss);
+    margin-bottom: 3rem;
+}
+
+.legal-doc section {
+    margin-bottom: 3rem;
+}
+
+.legal-doc h2 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.legal-doc p,
+.legal-doc li {
+    font-family: var(--font-head);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--ink-dim);
+    margin-bottom: 1rem;
+}
+
+.legal-doc ul {
+    padding-left: 1rem;
+}
+
+/* --- 9. CONSTITUTION TREATMENTS --- */
+
+/* Table of Contents - Sticky Sidebar */
+.toc-sidebar {
+    position: fixed;
+    left: 40px;
+    top: 200px;
+    width: 200px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.4;
+    transition: opacity 0.3s;
+    z-index: 5;
+}
+
+.toc-sidebar:hover {
+    opacity: 0.7;
+}
+
+.toc-sidebar a {
+    display: block;
+    color: var(--ink-dim);
+    text-decoration: none;
+    padding: 0.4rem 0;
+    border-left: 2px solid transparent;
+    padding-left: 0.75rem;
+    transition: border-color 0.3s, opacity 0.3s;
+}
+
+.toc-sidebar a:hover {
+    border-left-color: var(--moss);
+    opacity: 1;
+}
+
+.toc-sidebar a.active {
+    border-left-color: var(--moss);
+    color: var(--moss);
+    opacity: 1;
+}
+
+/* Hide TOC on small screens */
+@media (max-width: 1200px) {
+    .toc-sidebar {
+        display: none;
+    }
+}
+
+/* Green accent bars for principles/rules */
+.content-body ul li {
+    margin-bottom: 0.6rem;
+    padding-left: 1rem;
+    border-left: 3px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.content-body ul li strong {
+    color: var(--ink);
+    /* Bold text = white */
+    font-weight: 600;
+}
+
+/* Green accent on list items in Core Principles, Enforcement sections */
+.content-body h2+p+ul li,
+.content-body h2+ul li {
+    border-left-color: var(--moss);
+    opacity: 0.9;
+}
+
+/* Protocol Step Hierarchy (numbered lists) */
+.content-body ol {
+    counter-reset: step-counter;
+    list-style: none;
+    padding-left: 0;
+}
+
+.content-body ol li {
+    counter-increment: step-counter;
+    margin-bottom: 1.2rem;
+    padding-left: 3rem;
+    position: relative;
+}
+
+.content-body ol li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--moss);
+    width: 2rem;
+    text-align: center;
+}
+
+/* Note: Severity badges (HIGH/MEDIUM) inherit bold styling above.
+   For color-coded badges, consider adding custom classes to markdown. */
+
+/* Adjust h3 for rule headers */
+.content-body h3 {
+    font-size: 1.1rem;
+    margin-top: 2rem;
+    margin-bottom: 0.8rem;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 11px;
+    opacity: 1;
+    /* Ensure full opacity for readability */
+}
+
+/* Subtle vertical rhythm */
+.content-body>* {
+    margin-bottom: 1.2rem;
+}
+
+.content-body h2 {
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+}
+
+/* --- 6. KEYFRAMES --- */
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    50% {
+        transform: translateX(-50%) translateY(8px);
+    }
+}

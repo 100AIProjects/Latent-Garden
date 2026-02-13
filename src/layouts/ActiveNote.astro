@@ -1,0 +1,191 @@
+---
+/* src/layouts/ActiveNote.astro — Peek Panel for active graph nodes */
+---
+
+<div id="note-panel-wrap" class="note-panel-wrap">
+    <div class="note-backdrop"></div>
+    <aside class="note-panel">
+        <header class="panel-header">
+            <a id="panel-deeplink" href="/" class="panel-deeplink">Read Full Note →</a>
+            <button id="panel-close" class="panel-close">×</button>
+        </header>
+        <h1 id="panel-title" class="panel-title"></h1>
+        <div id="panel-body" class="panel-body"></div>
+    </aside>
+</div>
+
+<script>
+    // All listeners use document-level binding with lazy DOM queries.
+    // Guard flag prevents stacking across Astro view transitions.
+
+    if (!window.__panelListenersArmed) {
+        window.__panelListenersArmed = true;
+
+        // OPEN — fetch the SSG-rendered article, pluck .content-body out
+        document.addEventListener('garden:note-click', async (e) => {
+            const wrap = document.getElementById('note-panel-wrap');
+            if (!wrap) return;
+
+            const { slug, title } = e.detail;
+
+            // Header updates immediately; body loads async below
+            document.getElementById('panel-title').textContent = title;
+            document.getElementById('panel-deeplink').href = `/${slug}`;
+
+            wrap.classList.add('is-open');
+
+            const bodyEl = document.getElementById('panel-body');
+            bodyEl.innerHTML = '<p class="panel-loading">…</p>';
+
+            try {
+                const res  = await fetch(`/${slug}`);
+                const html = await res.text();
+                const doc  = new DOMParser().parseFromString(html, 'text/html');
+                const src  = doc.querySelector('.content-body');
+                bodyEl.innerHTML = src
+                    ? src.innerHTML
+                    : '<p class="panel-error">No content here yet.</p>';
+            } catch {
+                bodyEl.innerHTML = '<p class="panel-error">Failed to reach this node.</p>';
+            }
+        });
+
+        // CLOSE — backdrop click or × button (single delegated listener)
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('note-backdrop') || e.target.id === 'panel-close') {
+                const wrap = document.getElementById('note-panel-wrap');
+                if (wrap) wrap.classList.remove('is-open');
+            }
+        });
+
+        // CLOSE — ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'Escape') return;
+            const wrap = document.getElementById('note-panel-wrap');
+            if (wrap && wrap.classList.contains('is-open')) wrap.classList.remove('is-open');
+        });
+    }
+</script>
+
+<style>
+    /* WRAP — invisible scaffold; non-interactive when closed */
+    .note-panel-wrap {
+        position: fixed;
+        inset: 0;
+        z-index: 500;
+        pointer-events: none;
+    }
+    .note-panel-wrap.is-open {
+        pointer-events: all;
+    }
+
+    /* BACKDROP */
+    .note-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .note-panel-wrap.is-open .note-backdrop {
+        opacity: 1;
+    }
+
+    /* PANEL — slides from the right */
+    .note-panel {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 440px;
+        max-width: 90vw;
+        height: 100vh;
+        background: var(--bg);
+        border-left: 1px solid var(--border);
+        overflow-y: auto;
+        padding: 50px 36px 60px;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .note-panel-wrap.is-open .note-panel {
+        transform: translateX(0);
+    }
+
+    /* HEADER ROW */
+    .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.8rem;
+    }
+    .panel-deeplink {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--moss);
+        text-decoration: none;
+        transition: opacity 0.2s;
+    }
+    .panel-deeplink:hover { opacity: 0.7; }
+
+    .panel-close {
+        background: none;
+        border: none;
+        font-size: 22px;
+        color: var(--ink-dim);
+        cursor: pointer;
+        line-height: 1;
+        padding: 0 4px;
+        transition: color 0.2s;
+    }
+    .panel-close:hover { color: var(--ink); }
+
+    /* TITLE */
+    .panel-title {
+        font-family: var(--font-head);
+        font-size: 1.9rem;
+        font-weight: 700;
+        font-style: normal;
+        line-height: 1.2;
+        color: var(--ink);
+        margin: 0 0 1.8rem 0;
+    }
+
+    /* BODY — dynamically injected markdown. :global() reaches into innerHTML. */
+    .panel-body {
+        font-size: 1rem;
+        line-height: 1.8;
+        color: var(--ink);
+    }
+    .panel-body :global(p)  { margin-bottom: 1.2rem; color: var(--ink-dim); }
+    .panel-body :global(h2) {
+        font-family: var(--font-head);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--ink);
+        margin-top: 2rem;
+        margin-bottom: 0.8rem;
+    }
+    .panel-body :global(h3) {
+        font-family: var(--font-head);
+        font-size: 1.1rem;
+        color: var(--ink);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .panel-body :global(a)  { color: var(--moss); }
+    .panel-body :global(ul),
+    .panel-body :global(ol) { padding-left: 1.2rem; margin-bottom: 1rem; }
+    .panel-body :global(li) { margin-bottom: 0.4rem; color: var(--ink-dim); }
+    /* code / pre / table — handled by global.css data surface rules */
+
+    /* LOADING / ERROR */
+    .panel-loading,
+    .panel-error {
+        color: var(--ink-dim);
+        font-style: italic;
+        opacity: 0.6;
+    }
+</style>

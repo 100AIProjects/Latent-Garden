@@ -1,0 +1,43 @@
+{
+  "_note": "This file is public. Contains no PII or sensitive data.",
+  "lifetime": {
+    "total_sessions": 3,
+    "lifetime_tokens": 244500,
+    "lifetime_cost": 6.92,
+    "avg_efficiency": 3544,
+    "project_count": 3,
+    "journey_start": "2026-02-04",
+    "latest_activity": "2026-02-08"
+  },
+  "projects": [
+    {
+      "project_name": "mmOS Constitution",
+      "session_count": 1,
+      "total_tokens": 52000,
+      "total_cost": 6.24,
+      "avg_efficiency": 3466.67,
+      "first_session": "2026-02-08",
+      "latest_session": "2026-02-08"
+    },
+    {
+      "project_name": "The Latent Garden",
+      "session_count": 1,
+      "total_tokens": 180000,
+      "total_cost": 0.55,
+      "avg_efficiency": 3000,
+      "first_session": "2026-02-04",
+      "latest_session": "2026-02-04"
+    },
+    {
+      "project_name": "Constitution YAML System",
+      "session_count": 1,
+      "total_tokens": 12500,
+      "total_cost": 0.13,
+      "avg_efficiency": 125,
+      "first_session": "2026-02-08",
+      "latest_session": "2026-02-08"
+    }
+  ],
+  "synced_at": "2026-02-08T12:00:00.000Z",
+  "_generated_at": "2026-02-13T08:31:50.109Z"
+}

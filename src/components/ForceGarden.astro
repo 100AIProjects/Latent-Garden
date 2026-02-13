@@ -1,0 +1,261 @@
+---
+/* src/components/ForceGarden.astro */
+---
+
+<div id="garden-layer">
+  <canvas id="gardenCanvas"></canvas>
+</div>
+
+<script is:inline src="https://d3js.org/d3.v7.min.js" integrity="sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i" crossorigin="anonymous"></script>
+
+<script>
+  let canvas, ctx;
+  let width, height, simulation;
+  let nodes = [], links = [];
+  let mouse = { x: -1000, y: -1000 };
+
+  // COLORS
+  const CONFIG = {
+      c_active: '#2d5a27',
+      c_latent: 'rgba(5, 5, 5, 0.08)'
+  };
+
+  // 1. BOOTSTRAP — re-acquires DOM refs and arms the safety loader.
+  // Called on hard load AND on every astro:page-load (view transition back).
+  function bootstrap() {
+      // Re-acquire. On view transitions the old element is detached.
+      canvas = document.getElementById('gardenCanvas');
+      if (!canvas) return; // not on a page that has the garden
+      ctx = canvas.getContext('2d');
+
+      // Re-bind mouse listener to the live canvas element
+      canvas.addEventListener('mousemove', onMouseMove);
+      canvas.addEventListener('click', onClick);
+
+      // If d3 is already loaded, go straight to init. Otherwise poll until it is.
+      if (window.d3) {
+          console.log("KERNEL: Physics Engine Online");
+          init();
+      } else {
+          const loader = setInterval(() => {
+              if (window.d3) {
+                  clearInterval(loader);
+                  console.log("KERNEL: Physics Engine Online");
+                  init();
+              }
+          }, 100);
+      }
+  }
+
+  // Fire on hard page load
+  bootstrap();
+
+  // Fire on every Astro view-transition navigation (covers returning to this page)
+  document.addEventListener('astro:page-load', bootstrap);
+
+  function init() {
+      resize();
+      fetchData();
+  }
+
+  // 2. FETCH DATA
+  async function fetchData() {
+      try {
+          console.log("KERNEL: Fetching Graph Data...");
+          const response = await fetch('/graph.json'); // Fetches from our new endpoint
+          const data = await response.json();
+          
+          nodes = data.nodes;
+          links = data.links;
+          
+          console.log(`KERNEL: Loaded ${nodes.length} nodes.`);
+          startSim();
+      } catch (err) {
+          console.error("KERNEL ERROR: Could not load garden.", err);
+      }
+  }
+
+  // 3. PHYSICS (Same as before)
+  function startSim() {
+      if(simulation) simulation.stop();
+      simulation = d3.forceSimulation(nodes)
+          .force("link", d3.forceLink(links).id(d => d.id)
+              // Per-link distance: ref-hub primaries ultra-tight, then standard tiers
+              .distance(d => d.strength >= 0.25 ? 18 :   // ref-hub primary       → ultra-tight
+                             d.strength >= 0.1  ? 25 :   // primary tag + latent  → tight
+                             d.strength >= 0.07 ? 35 : 50) // wikilink            → medium
+                                                            // secondary tag       → loose
+              // Per-link strength: read from data, fallback 0.02
+              .strength(d => d.strength || 0.02)
+          )
+          .force("charge", d3.forceManyBody().strength(d =>
+              d.type === 'ghost' ? -500 :
+              -(12 + Math.min(d.refs || 0, 4) * 8)        // ref hubs repel harder → attractors
+          ))
+          .force("collide", d3.forceCollide().radius(d =>
+              d.type === 'active' ? 10 + Math.min(d.refs || 0, 3) * 2 : 2
+          ))
+          .force("radial", d3.forceRadial(10, width/2, height/2).strength(0.06))
+          .on("tick", render);
+  }
+
+  // 4. RENDER
+  function render() {
+      ctx.clearRect(0, 0, width, height);
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const c_active = isDark ? '#b4f8c8' : CONFIG.c_active;
+
+      // --- COST COLOR SCALE: Pre-compute max cost for gradient ---
+      const maxCost = Math.max(...nodes.map(n => n.cost_usd || 0));
+
+      // Helper: Get node color based on cost_usd (All Green / Amber Gradient)
+      function getNodeColor(node) {
+          // No data or zero cost: Green (default)
+          if (node.cost_usd === null || node.cost_usd === undefined || node.cost_usd === 0) {
+              return isDark ? '#b4f8c8' : '#2d5a27';
+          }
+
+          // Has cost data: Amber Gradient (low cost → high cost)
+          const ratio = Math.min(node.cost_usd / maxCost, 1);
+          const moss = isDark ? '#b4f8c8' : '#2d5a27';
+          const amber = isDark ? '#ffb347' : '#b45309';
+
+          // Linear interpolation between moss and amber
+          return lerpColor(moss, amber, ratio);
+      }
+
+      // Helper: Linear color interpolation
+      function lerpColor(color1, color2, ratio) {
+          const c1 = hexToRgb(color1);
+          const c2 = hexToRgb(color2);
+          const r = Math.round(c1.r + (c2.r - c1.r) * ratio);
+          const g = Math.round(c1.g + (c2.g - c1.g) * ratio);
+          const b = Math.round(c1.b + (c2.b - c1.b) * ratio);
+          return `rgb(${r}, ${g}, ${b})`;
+      }
+
+      function hexToRgb(hex) {
+          const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          return result ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16)
+          } : { r: 0, g: 0, b: 0 };
+      }
+
+      // 4a. DRAW LINKS
+      ctx.globalAlpha = isDark ? 0.12 : 0.08;
+      ctx.strokeStyle = c_active;
+      ctx.lineWidth = 0.8;
+      links.forEach(link => {
+          if (!link.source.x || !link.target.x) return; // skip unresolved
+          ctx.beginPath();
+          ctx.moveTo(link.source.x, link.source.y);
+          ctx.lineTo(link.target.x, link.target.y);
+          ctx.stroke();
+      });
+
+      // 4b. DRAW NODES
+      let anyCursorHit = false;
+      nodes.forEach(node => {
+          if (node.type === 'ghost') return;
+
+          const dx = mouse.x - node.x;
+          const dy = mouse.y - node.y;
+          const isHover = Math.sqrt(dx*dx + dy*dy) < 20;
+          if (isHover) anyCursorHit = true;
+
+          ctx.beginPath();
+          if (node.type === 'active') {
+              const refBonus = Math.min(node.refs || 0, 3); // 0–3 px radius bump
+              const nodeColor = getNodeColor(node); // Dynamic color based on cost_usd
+
+              ctx.globalAlpha = 1;
+              ctx.fillStyle = nodeColor;
+              ctx.arc(node.x, node.y, (isHover ? 8 : 5) + refBonus, 0, Math.PI * 2);
+              ctx.fill();
+
+              // Labels: always on for reference hubs (refs ≥ 3), otherwise hover-only
+              if (node.label && (isHover || refBonus >= 3)) {
+                  ctx.globalAlpha = isHover ? 1 : 0.5;
+                  ctx.fillStyle = nodeColor; // Match label color to node
+                  ctx.font = (isHover ? "12px" : "10px") + " monospace";
+                  ctx.fillText(node.label, node.x + 12, node.y + 4);
+              }
+          } else {
+              ctx.globalAlpha = isHover ? 0.5 : (isDark ? 0.15 : 0.08);
+              ctx.fillStyle = c_active;
+              ctx.arc(node.x, node.y, isHover ? 3 : 1.5, 0, Math.PI * 2);
+              ctx.fill();
+          }
+      });
+
+      // Pointer cursor affordance — switches when hovering any live node
+      canvas.style.cursor = anyCursorHit ? 'pointer' : 'default';
+
+      // Reset alpha for safety
+      ctx.globalAlpha = 1;
+  }
+
+  // 5. RESIZE
+  function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+      if(simulation) {
+          simulation.force("radial", d3.forceRadial(10, width/2, height/2).strength(0.06));
+          simulation.alpha(1).restart();
+      }
+  }
+
+  function onMouseMove(e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      if(simulation) simulation.alphaTarget(0.1).restart();
+  }
+
+  // 6. CLICK — hit-test and dispatch typed events to the peek interfaces
+  function onClick(e) {
+      if (!nodes.length) return;
+
+      let closest     = null;
+      let closestDist = 18;
+
+      nodes.forEach(node => {
+          if (node.type === 'ghost') return;
+          const dx = e.clientX - node.x;
+          const dy = e.clientY - node.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < closestDist) {
+              closestDist = dist;
+              closest = node;
+          }
+      });
+
+      if (!closest) return;
+
+      if (closest.type === 'active') {
+          document.dispatchEvent(new CustomEvent('garden:note-click', {
+              detail: { slug: closest.id, title: closest.label }
+          }));
+      } else if (closest.type === 'latent') {
+          document.dispatchEvent(new CustomEvent('garden:seed-click', {
+              detail: { id: closest.id.replace('plot-', '') }
+          }));
+      }
+  }
+
+  window.addEventListener('resize', resize);
+</script>
+
+<style>
+  #garden-layer {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      z-index: 2; /* Sits on top of Background Layer (-2) */
+      pointer-events: all;
+  }
+</style>

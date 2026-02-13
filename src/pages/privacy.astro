@@ -1,0 +1,79 @@
+---
+/* src/pages/privacy.astro */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Wayfinder from '../components/Wayfinder.astro';
+---
+
+<BaseLayout>
+    <main class="container legal-page">
+        <Wayfinder title="PRIVACY_PROTOCOL" parent="LEGAL" />
+
+        <article class="legal-doc">
+            <h1>Privacy Protocol</h1>
+            <p class="last-updated">LAST_UPDATE: 2026-02-03</p>
+
+            <section>
+                <h2>1. The Philosophy of Data</h2>
+                <p>We believe that "User Data" is a liability, not an asset. We do not want to know who you are, only that you were here and that you found something of value.</p>
+            </section>
+
+            <section>
+                <h2>2. What We Collect (The Weather)</h2>
+                <p>We store exactly one piece of data in your browser's local storage: <code>theme="dark"</code> (or light). This ensures the sun doesn't rise unexpectedly when you refresh the page.</p>
+                <p>We use Cloudflare Analytics for aggregate metrics (visitors, country). This is cookie-less and anonymized at the edge.</p>
+            </section>
+
+            <section>
+                <h2>3. What We Do Not Collect</h2>
+                <ul>
+                    <li>No tracking cookies.</li>
+                    <li>No email addresses (unless you explicitly "Sow" an idea).</li>
+                    <li>No behavioral fingerprinting.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>4. Third-Party Services</h2>
+                <p>We use Stripe for processing donations. When you contribute, you are subject to Stripe's privacy policy. We do not store your payment information.</p>
+                <p><strong>Subscription Management:</strong> If you subscribe via Stripe, you can manage or cancel your subscription at any time through the Customer Portal link included in your Stripe receipt emails. We do not send marketing emails or newsletters.</p>
+                <p>Cloudflare provides hosting and analytics. Their privacy policy applies to data processed through their infrastructure.</p>
+            </section>
+
+            <section>
+                <h2>5. Data Retention</h2>
+                <p>Your theme preference persists in localStorage until you clear your browser data. Analytics data is aggregated and anonymized by Cloudflare with no individual identification.</p>
+            </section>
+
+            <section>
+                <h2>6. Your Rights</h2>
+                <p>You can clear your theme preference by clearing your browser's localStorage. We have no ability to identify or delete analytics data, as it is anonymized at collection.</p>
+            </section>
+
+            <section>
+                <h2>7. Changes to This Policy</h2>
+                <p>This policy may be updated. The LAST_UPDATE timestamp indicates the most recent revision. Continued use after changes constitutes acceptance.</p>
+            </section>
+
+            <section>
+                <h2>8. Contact</h2>
+                <p>Privacy concerns? Reach us at mike@100aiprojects.com</p>
+            </section>
+        </article>
+
+        <footer class="footer-soil">
+            <div class="soil-divider"></div>
+            <a href="/support" class="water-cta">
+                Would you like to water the garden? 🪴
+            </a>
+            <div class="legals">
+                <span>© 2026 100 AI PROJECTS</span>
+                <a href="/tc">T&C</a>
+                <a href="/privacy">Privacy</a>
+            </div>
+        </footer>
+    </main>
+</BaseLayout>
+
+<style>
+    .legal-page { margin: 150px auto; padding: 0 20px; }
+</style>

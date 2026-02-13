@@ -1,0 +1,401 @@
+---
+/* src/pages/[...slug].astro */
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Wayfinder from '../components/Wayfinder.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('garden');
+  
+  // 1. Real Projects (The ones that exist)
+  const realPaths = posts.map(entry => ({
+    params: { slug: entry.slug },
+    props: { type: 'real', entry },
+  }));
+
+  // 2. Latent Plots (The empty space)
+  const latentPaths = [];
+  for (let i = 0; i < 1463; i++) {
+      const id = i.toString().padStart(4, '0');
+      // Only create if it doesn't conflict with a real slug
+      if (!posts.find(p => p.slug === `plot-${id}`)) {
+          latentPaths.push({
+              params: { slug: `plot-${id}` },
+              props: { type: 'latent', id }
+          });
+      }
+  }
+
+  return [...realPaths, ...latentPaths];
+}
+
+// 3. Destructure Props
+const { type, entry, id } = Astro.props;
+let Content;
+let prevPost = null;
+let nextPost = null;
+let lastPostSlug = '';
+
+// 4. Safe Render Logic
+if (type === 'real' && entry) {
+    const rendered = await entry.render();
+    Content = rendered.Content;
+
+    // Calculate prev/next for navigation (sorted by slug = project number order)
+    const allPosts = await getCollection('garden');
+    const sorted = allPosts.sort((a, b) => a.slug.localeCompare(b.slug));
+    lastPostSlug = sorted[sorted.length - 1].slug;
+
+    const currentIndex = sorted.findIndex(p => p.slug === entry.slug);
+    prevPost = currentIndex > 0 ? sorted[currentIndex - 1] : null;
+    nextPost = currentIndex < sorted.length - 1 ? sorted[currentIndex + 1] : null;
+}
+---
+
+<BaseLayout>
+    
+    {type === 'real' && entry && (
+        <>
+            <article class={`project-article ${entry.slug === '002-my-constitution' ? 'constitution-article' : ''} ${entry.slug === '001-about-the-garden' ? 'no-toc' : ''}`}>
+                <Wayfinder title={entry.data.title} parent={entry.data.parent} />
+
+                <header class="article-header">
+                    <h1 class="title">{entry.data.title}</h1>
+                    <div class="meta">
+                        <span class="date">{new Date(entry.data.date).toLocaleDateString()}</span>
+                        <span class={`status-tag ${entry.data.status?.toLowerCase()}`}>{entry.data.status}</span>
+                    </div>
+                </header>
+
+                <div class="content-body">
+                    <Content />
+                </div>
+            </article>
+
+            <nav class="project-nav">
+                {prevPost ? (
+                    <a href={`/${prevPost.slug}`} class="nav-arrow nav-prev">
+                        <span class="nav-arrow-symbol">←</span>
+                        <span class="nav-label">{prevPost.data.title}</span>
+                    </a>
+                ) : (
+                    <a href="/001-about-the-garden" class="nav-arrow nav-prev nav-boundary">
+                        <span class="nav-arrow-symbol">←</span>
+                        <span class="nav-label">Start of Garden</span>
+                    </a>
+                )}
+
+                <a href="/archive" class="nav-center">
+                    <span class="nav-label">INDEX</span>
+                </a>
+
+                {nextPost ? (
+                    <a href={`/${nextPost.slug}`} class="nav-arrow nav-next">
+                        <span class="nav-label">{nextPost.data.title}</span>
+                        <span class="nav-arrow-symbol">→</span>
+                    </a>
+                ) : (
+                    <a href={`/${lastPostSlug}`} class="nav-arrow nav-next nav-boundary">
+                        <span class="nav-label">End of Garden</span>
+                        <span class="nav-arrow-symbol">→</span>
+                    </a>
+                )}
+            </nav>
+
+            <footer class="footer-soil">
+                <div class="soil-divider"></div>
+
+                <a href="/support" class="water-cta">
+                    Would you like to water the garden? 🪴
+                </a>
+
+                <div class="legals">
+                    <span>© 2026 100 AI PROJECTS</span>
+                    <a href="/tc">T&C</a>
+                    <a href="/privacy">Privacy</a>
+                </div>
+            </footer>
+        </>
+    )}
+
+    {type === 'latent' && (
+    <article class="latent-article">
+        <Wayfinder title={`PLOT-${id}`} />
+
+        <div class="latent-container">
+            <h1 class="latent-title">Latent Plot #{id}</h1>
+            <p class="latent-desc">
+                This soil is undisturbed. No logic has germinated here yet.
+            </p>
+
+            <div class="latent-status">STATUS: DORMANT</div>
+
+            <a href={`mailto:mike@100aiprojects.com?subject=Sowing Plot ${id}`} class="sow-button">
+                [ SOW IDEA ]
+            </a>
+
+            <a href="/" class="return-link">← RETURN TO GARDEN</a>
+        </div>
+    </article>
+)}
+
+<script>
+    // Table of Contents Generator (all projects except 001)
+    function generateTOC() {
+        const article = document.querySelector('.project-article');
+        if (!article) return;
+
+        // Skip TOC for 001-about-the-garden
+        if (article.classList.contains('no-toc')) return;
+
+        const contentBody = article.querySelector('.content-body');
+        if (!contentBody) return;
+
+        // Get all h2 headings
+        const headings = contentBody.querySelectorAll('h2');
+        if (headings.length === 0) return;
+
+        // Create TOC container
+        const toc = document.createElement('nav');
+        toc.className = 'toc-sidebar';
+        toc.setAttribute('aria-label', 'Table of Contents');
+
+        // Generate TOC links
+        headings.forEach((heading, index) => {
+            // Add ID to heading for jump links
+            const id = `section-${index}`;
+            heading.id = id;
+
+            // Create link
+            const link = document.createElement('a');
+            link.href = `#${id}`;
+            link.textContent = heading.textContent;
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            toc.appendChild(link);
+        });
+
+        // Insert TOC before article
+        article.parentNode.insertBefore(toc, article);
+
+        // Scroll spy - highlight current section
+        const tocLinks = toc.querySelectorAll('a');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    tocLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                    });
+                }
+            });
+        }, { rootMargin: '-100px 0px -66%' });
+
+        headings.forEach(heading => observer.observe(heading));
+    }
+
+    // Run on page load and view transitions
+    generateTOC();
+    document.addEventListener('astro:page-load', generateTOC);
+
+    // Mermaid Renderer — transforms fenced mermaid blocks into diagrams
+    async function renderMermaid() {
+        const blocks = document.querySelectorAll('pre[data-language="mermaid"]');
+        if (blocks.length === 0) return;
+
+        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+
+        const style = getComputedStyle(document.documentElement);
+        const moss   = style.getPropertyValue('--moss').trim();
+        const ink    = style.getPropertyValue('--ink').trim();
+        const bg     = style.getPropertyValue('--bg').trim();
+        const border = style.getPropertyValue('--border').trim();
+
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'base',
+            themeVariables: {
+                primaryColor: moss,
+                primaryTextColor: ink,
+                primaryBorderColor: border,
+                lineColor: border,
+                secondaryColor: bg,
+                tertiaryColor: bg,
+                background: bg,
+                mainBkg: bg,
+                nodeBorder: border,
+                clusterBkg: bg,
+                titleColor: ink,
+                edgeLabelBackground: bg,
+                textColor: ink,
+                fontSize: '14px',
+                fontFamily: 'Space Mono, monospace',
+            },
+        });
+
+        for (const pre of blocks) {
+            const code = pre.textContent;
+            const div = document.createElement('div');
+            div.className = 'mermaid';
+            const id = `mermaid-${Math.random().toString(36).slice(2, 8)}`;
+            const { svg } = await mermaid.render(id, code);
+            div.innerHTML = svg;
+            pre.parentElement.replaceChild(div, pre);
+        }
+    }
+
+    renderMermaid();
+    document.addEventListener('astro:page-load', renderMermaid);
+
+    // KaTeX Math Renderer — transforms math code blocks
+    async function renderMath() {
+        const mathBlocks = document.querySelectorAll('pre code.language-math');
+        if (mathBlocks.length === 0) return;
+
+        const katex = await import('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs');
+
+        for (const code of mathBlocks) {
+            const latex = code.textContent.trim();
+            const pre = code.parentElement;
+            const div = document.createElement('div');
+            div.className = 'math-block';
+
+            try {
+                katex.default.render(latex, div, { displayMode: true, throwOnError: false });
+                pre.parentElement.replaceChild(div, pre);
+            } catch (e) {
+                console.warn('KaTeX render failed:', e);
+            }
+        }
+    }
+
+    renderMath();
+    document.addEventListener('astro:page-load', renderMath);
+</script>
+
+<style>
+    /* Project Navigation - Stepping Stones */
+    .project-nav {
+        max-width: var(--width);
+        margin: 0 auto;
+        padding: 4rem 0;
+        border-top: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    /* Arrow Links */
+    .nav-arrow {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--moss);
+        text-decoration: none;
+        opacity: 0.7;
+        transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .nav-prev { justify-content: flex-start; }
+    .nav-next { justify-content: flex-end; }
+
+    .nav-arrow:hover {
+        opacity: 1;
+    }
+
+    .nav-prev:hover { transform: translateX(-5px); }
+    .nav-next:hover { transform: translateX(5px); }
+
+    /* Boundary State (Start/End of Garden) */
+    .nav-boundary {
+        opacity: 0.4;
+    }
+
+    .nav-boundary:hover {
+        opacity: 0.7;
+    }
+
+    /* Arrow Symbols */
+    .nav-arrow-symbol {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    /* Center INDEX Link */
+    .nav-center {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        color: var(--ink-dim);
+        text-decoration: none;
+        padding: 8px 16px;
+        border: 1px solid var(--border);
+        transition: border-color 0.3s, color 0.3s;
+    }
+
+    .nav-center:hover {
+        border-color: var(--moss);
+        color: var(--moss);
+    }
+
+    /* Truncate long titles */
+    .nav-label {
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Responsive: Stack on mobile */
+    @media (max-width: 600px) {
+        .project-nav {
+            grid-template-columns: 1fr;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .nav-prev, .nav-next {
+            justify-content: center;
+        }
+    }
+
+    /* Latent Plot Styles */
+    .latent-article {
+        height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+    .latent-title { font-family: var(--font-mono); font-size: 1.5rem; color: var(--moss); margin-bottom: 1rem; }
+    .latent-desc { opacity: 0.5; max-width: 400px; margin-bottom: 2rem; }
+    .latent-status { font-family: var(--font-mono); font-size: 10px; border: 1px solid var(--border); padding: 5px 10px; display: inline-block; opacity: 0.55; }
+    .return-link { margin-top: 3rem; font-family: var(--font-mono); font-size: 10px; text-decoration: none; color: var(--ink); opacity: 0.7; }
+    .return-link:hover { opacity: 1; }
+
+    .sow-button {
+        margin-top: 2rem;
+        font-family: var(--font-mono);
+        color: var(--moss);
+        border: 1px solid var(--moss);
+        padding: 10px 20px;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+    .sow-button:hover {
+        background: var(--moss);
+        color: var(--bg);
+    }
+</style>
+
+</BaseLayout>

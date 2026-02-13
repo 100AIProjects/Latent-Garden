@@ -1,0 +1,25 @@
+# Cloudflare Pages Security Headers
+# https://developers.cloudflare.com/pages/platform/headers/
+
+# Apply to all routes
+/*
+  # Prevent clickjacking
+  X-Frame-Options: DENY
+
+  # Prevent MIME sniffing
+  X-Content-Type-Options: nosniff
+
+  # Referrer policy
+  Referrer-Policy: strict-origin-when-cross-origin
+
+  # Permissions policy (disable unnecessary features)
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()
+
+  # Content Security Policy
+  # Allows: self, D3.js CDN, Google Fonts
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://d3js.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'
+
+# Telemetry data (cache for 1 hour)
+/telemetry.json
+  Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
