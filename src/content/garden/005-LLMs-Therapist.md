@@ -4,7 +4,7 @@ date: 2026-02-09
 type: "project"
 status: "Seedling"
 id: "005_LLMS_THERAPIST"
-description: "A therapist to hold my AI life coach accoutnable to my goals and constitution."
+description: "A therapist to hold my AI life coach accountable to my goals and constitution."
 tags: ["Philosophy", "Growth", "AI Partnership"]
 ---
 
