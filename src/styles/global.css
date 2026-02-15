@@ -795,11 +795,6 @@ tr:last-child td {
     overflow-y: hidden;
 }
 
-/* Hide the LaTeX annotation text, keep the rendered MathML */
-.katex-mathml annotation {
-    display: none;
-}
-
 /* --- 6. KEYFRAMES --- */
 @keyframes bounce {
 
