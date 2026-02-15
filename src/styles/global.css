@@ -795,6 +795,11 @@ tr:last-child td {
     overflow-y: hidden;
 }
 
+/* Hide MathML (screen reader version) */
+.katex-mathml {
+    display: none;
+}
+
 /* --- 6. KEYFRAMES --- */
 @keyframes bounce {
 
