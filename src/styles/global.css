@@ -791,19 +791,6 @@ tr:last-child td {
 .content-body .katex-display {
     margin: 2.5rem 0;
     padding: 1.5rem 0;
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-/* Ensure MathML is visually hidden (accessibility only) */
-.katex .katex-mathml {
-    position: absolute !important;
-    clip: rect(1px, 1px, 1px, 1px) !important;
-    padding: 0 !important;
-    border: 0 !important;
-    height: 1px !important;
-    width: 1px !important;
-    overflow: hidden !important;
 }
 
 /* --- 6. KEYFRAMES --- */
