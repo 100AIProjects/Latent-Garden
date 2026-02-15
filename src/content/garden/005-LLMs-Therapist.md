@@ -29,7 +29,7 @@ Tracking the soul in a spreadsheet is a ridiculous ambition. The tags serve as t
 The morning journal is a loan application. I ask my future self for focus or courage. This is **Intent ```(I)```**. Writing it down spends social capital with myself. I owe the machine that performance. At night, the Auditor checks the books to determine solvency.
 
 ```math
-A=(1−\frac{\text{∣I−P∣}}{I}​)⋅(1−σ).
+A = \left(1 - \frac{|I - P|}{I}\right) \cdot (1 - \sigma)
 ```
 
 - **```I``` Intent:** The "work debt" issued during the morning ritual.
