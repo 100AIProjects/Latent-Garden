@@ -1,5 +1,7 @@
 import { defineConfig } from 'astro/config';
 import wikiLinkPlugin from 'remark-wiki-link';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 // Wikilink → slug mapping for garden content
 const WIKI_MAP = {
@@ -14,6 +16,7 @@ const WIKI_MAP = {
 export default defineConfig({
     markdown: {
         remarkPlugins: [
+            remarkMath,
             [wikiLinkPlugin, {
                 pageResolver: (name) => {
                     const key = name.toLowerCase().replace(/\s+/g, '-');
@@ -27,5 +30,6 @@ export default defineConfig({
                 hrefTemplate: (permalink) => `/${permalink}`,
             }],
         ],
+        rehypePlugins: [rehypeKatex],
     },
 });

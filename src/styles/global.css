@@ -787,6 +787,14 @@ tr:last-child td {
     margin-bottom: 1.5rem;
 }
 
+/* Math block styling (KaTeX) */
+.content-body .katex-display {
+    margin: 2.5rem 0;
+    padding: 1.5rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
 /* --- 6. KEYFRAMES --- */
 @keyframes bounce {
 

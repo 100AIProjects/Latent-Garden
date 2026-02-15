@@ -139,7 +139,7 @@ if (type === 'real' && entry) {
     </article>
 )}
 
-<script is:inline>
+<script>
     // Table of Contents Generator (all projects except 001)
     function generateTOC() {
         const article = document.querySelector('.project-article');
@@ -250,31 +250,6 @@ if (type === 'real' && entry) {
 
     renderMermaid();
     document.addEventListener('astro:page-load', renderMermaid);
-
-    // KaTeX Math Renderer — transforms math code blocks
-    async function renderMath() {
-        const mathBlocks = document.querySelectorAll('pre code.language-math');
-        if (mathBlocks.length === 0) return;
-
-        const katex = await import('https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.mjs');
-
-        for (const code of mathBlocks) {
-            const latex = code.textContent.trim();
-            const pre = code.parentElement;
-            const div = document.createElement('div');
-            div.className = 'math-block';
-
-            try {
-                katex.default.render(latex, div, { displayMode: true, throwOnError: false });
-                pre.parentElement.replaceChild(div, pre);
-            } catch (e) {
-                console.warn('KaTeX render failed:', e);
-            }
-        }
-    }
-
-    renderMath();
-    document.addEventListener('astro:page-load', renderMath);
 </script>
 
 <style>
