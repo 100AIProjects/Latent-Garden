@@ -16,8 +16,8 @@
   Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=()
 
   # Content Security Policy
-  # Allows: self, D3.js CDN, Google Fonts
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://d3js.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'
+  # Allows: self, D3.js CDN, Google Fonts, KaTeX CDN
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://d3js.org; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'
 
 # Telemetry data (cache for 1 hour)
 /telemetry.json
