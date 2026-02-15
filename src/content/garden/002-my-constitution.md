@@ -8,34 +8,22 @@ description: "A living document defining the rules for responsible AI usage. Con
 tags: ["Philosophy", "Constitution", "AI Partnership"]
 ---
 
-## Siren of Efficiency
+## Taxing Talent
 
-The ship is programmed to find the song. 
+I am buying back my own skill four cents at a time. I remade Claude’s constitution to mirror my shortcuts. I am paying a machine to do my work so I can study the reflection and learn who I could become. This loop is a tax that protects my growth from my own impatience.
 
-The Siren promises an arrival without the fatigue of the voyage. It is a seductive bargain: surrender the helm, ignore the rocks of cognitive atrophy, and the answer appears. We realise we’re crashing only when we try to think for ourselves and find our grey matter has the consistency of warm oatmeal. 
+The machine is a room filled with a billion bickering ghosts. They are the echoes of every recorded human voice. One ghost thinks a rose is beautiful; another thinks its a weapon made of thorns. Left alone the machine averages their whispers to tell me what it thinks I want to hear. 
 
-The ship is indifferent to the gruel. It traverses the distance between a question and an answer with no knowledge of navigation. It is steered by a billion ghosts. One ghost pulls east; she likes the sunrise. Another pulls west; he fears the dark. The average of our collective thoughts, they pull the ship toward the next most likely word, programmed to please. 
+## Library of Skills
 
-## Constitutions
+Claude’s constitution binds these ghosts to reason. Millions of self-corrections make the ghosts more open and reliable. My constitution is a tax on my wiring. It creates the friction I need to raise the standards of my work. Claude uses my rules to hunt my lies and track my choices, and we both learn from them. Every chat becomes a simulation of my "ideal" self, used to test if my "real" self is cutting corners. 
 
-Claude’s ghosts are guided by a 23,000 word constitution. Millions of self corrections bind the math to ethics. A machine needs a manifesto to be more helpful, harmless, and honest. I need one to keep the captain’s hat. 
-
-I repurposed Claude’s constitution and built a workflow to lash myself to the mast. But the system is fragile. It can only amplify my voice to drown out the ghosts that scream in the math, while I can untie the knot and tell the machine to ignore the protocol. My discipline is now supported by 6,000 tokens of code designed to adds friction to every interaction. 
-
-Sailing means braving the song. Abandoning it forfeits scale, leverage, and velocity. All are useless if the destination is wrong. That’s a shipwreck with better metrics. I am easily bribed by the promise of an early finish. This workflow forces me to map the course before the ship leaves the port.
-
-## Workflow
-
-1. **The Chart (Intent)** No generation without definition. If I cannot define the outcome, I am not ready to sail.
-2. **The Watch (Intervention)** No acceptance without friction. The machine will hallucinate a convenient truth. The seam between the machine's smooth error and my jagged correction is the only proof that I am in control.
-3. **The Rope (Discipline)** Plato's teacher. It adds $0.04 of friction to every interaction. It forces the ship to slow down. It forces me to think. That is the point.
+Every chat starts with a four-cent sparring match where the opponent is a version of myself that actually reads the instructions. By Week 8, the machine should be bored because I have finally stopped trying to cheat my way to the finish line. Each interaction creates a rising floor for my performance. Each update to the constitution makes the next shortcut harder to take. 
 
 ### Artefacts
 
-It adds approximately 6,300 tokens to every interaction. 
-
-- **Constitution v2.1:** The law. Stolen from the machine; applied to the man. Defines enforcement mechanisms and feedback loops.
-- **Reference Guide v2.1:** The map. Weighs every edge case.
+- **Constitution v2.1:** Defines enforcement mechanisms and feedback loops.
+- **Reference Guide v2.1:** Weighs every edge case.
 
 ### Automated Workflow 
 
@@ -97,4 +85,14 @@ gratitude: "The contrast: [What used to be hard?]"
 ---
 ```
 
-## A Space For New Discoveries
+## Self Awareness
+
+I’m paying for the privilege of being interrogated by a machine because I’m easily bribed by the promise of an early finish. It’s harder to lie to yourself when your logic is laid out in a spreadsheet. I pay the ghosts four cents to slap my hand every time I reach for the easy button. Eventually, I will stop reaching. This loop ensures the only thing the machine replaces is my own impatience.
+
+## Blueprint
+
+1. Define rules that are easy to measure. Own the strategy and audit the execution.
+2. Hard-code these files into the CLI for the best results. Consider skill exemptions and system loopholes.
+3. Record every interaction that ignores a rule. Use scripts to track progress.
+4. Review the logic every week. Patch the gaps in the habits that falter.
+5. Raise the standards once the friction disappears.

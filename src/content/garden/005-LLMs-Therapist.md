@@ -26,22 +26,23 @@ Tracking the soul in a spreadsheet is a ridiculous ambition. The tags serve as t
 
 ### The Math of the Debt
 
-The morning journal is a loan application. I ask my future self for focus or courage. This is **Intent ```(I)```**. Writing it down spends social capital with myself. I owe the machine that performance. At night, the Auditor checks the books to determine solvency.
+The morning journal is a loan application. I ask my future self for focus or courage. This is **Intent ```(I)```**. Writing it down spends social capital with myself. I owe the machine that performance. At night, the Auditor checks the books to determine solvency.
 
 ```math
-I_{total} = \frac{\text{Net Calibration Output}}{I} \times (1 - \sigma)
+A=(1−\frac{\text{∣I−P∣}}{I}​)⋅(1−σ).
 ```
 
-- **Intent ```(I)```:** The amount of "work debt" I took out this morning.
-- **Net Calibration Output:** The actual "payment" made through tagged actions.
-- **Honesty Penalty ```(σ)```:** A tax on my excuses. High flattery results in a high tax.
+- **```I``` Intent:** The "work debt" issued during the morning ritual.
+- **```P``` Performance:** The actual payment recorded via telemetry and tags.
+- **```σ``` Honesty Penalty:** A tax on flattery or sycophancy identified during audit.
+- **```A``` Accuracy:** The master integrity score. It reflects self-knowledge.
 
-| Scenario | The Math | The Result | The Personality |
-| --- | --- | --- | --- |
-| **High Intent / High Action** | I=10,P=10 | **Sovereignty** | **The Ideal.** I am exactly who I claim to be. |
-| **Low Intent / Low Action** | $I=2, P=2$ | **Stagnation** | The **Anchor**. I am honest; I am also going nowhere. |
-| **Low Intent / High Action** | I=2,P=10 | **Sandbagging** | **The Coward.** I set the bar low to avoid failure. |
-| **High Intent / Low Action** | I=10,P=2 | **Bankruptcy** | **The Ghost.** I am a collection of unfulfilled promises. |
+| Scenario | ```(I)``` | ```(P)``` | ```(A)``` | The Result | The Personality |
+| --- | --- | --- | --- | --- | --- |  
+| **High Intent / High Action** | 10 | 10 | 1.0 | **Sovereignty** | **The Agent:** I am exactly who I claim to be. |
+| **Low Intent / Low Action** | 2 | 2 | 1.0 | **Stagnation** | **The Anchor:** High accuracy; low load. I am going nowhere. |
+| **Low Intent / High Action** | 2 | 10 | -3.0 | **Sandbagging** | **The Coward:** Precision Error. I hide my capacity to avoid risk. |
+| **High Intent / Low Action** | 10 | 2 | 0.2 | **Bankruptcy** | **The Ghost:** Integrity Error. I am unfulfilled promises. |
 
 ## The Internal Oversight
 

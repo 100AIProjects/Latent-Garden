@@ -5,7 +5,7 @@ const { parent, title } = Astro.props;
 // Logic to handle special parent names
 const getParentLink = (p) => {
     if (p === 'ROOT') return '/';
-    if (p === 'ARCHIVE') return '/archive';
+    if (p === 'MAP') return '/map';
     return `/${p.toLowerCase()}`;
 };
 ---
