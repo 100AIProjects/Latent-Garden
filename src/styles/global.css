@@ -791,6 +791,8 @@ tr:last-child td {
 .content-body .katex-display {
     margin: 2.5rem 0;
     padding: 1.5rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 /* --- 6. KEYFRAMES --- */

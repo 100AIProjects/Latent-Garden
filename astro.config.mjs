@@ -30,12 +30,6 @@ export default defineConfig({
                 hrefTemplate: (permalink) => `/${permalink}`,
             }],
         ],
-        rehypePlugins: [
-            [rehypeKatex, {
-                output: 'html',
-                strict: false,
-                throwOnError: false
-            }]
-        ],
+        rehypePlugins: [rehypeKatex],
     },
 });
